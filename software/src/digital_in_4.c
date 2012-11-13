@@ -25,25 +25,55 @@
 #include "bricklib/utility/mutex.h"
 #include "bricklib/utility/init.h"
 #include "bricklib/bricklet/bricklet_communication.h"
+#include "bricklib/drivers/pio/pio.h"
 #include "config.h"
-#include <pio/pio_it.h>
-#include <pio/pio.h>
 
-const ComMessage com_messages[] = {
-	{TYPE_GET_VALUE, (message_handler_func_t)get_value},
-	{TYPE_SET_GROUP, (message_handler_func_t)set_group},
-	{TYPE_GET_GROUP, (message_handler_func_t)get_group},
-	{TYPE_GET_AVAILABLE_FOR_GROUP, (message_handler_func_t)get_available_for_group},
-	{TYPE_SET_DEBOUNCE_PERIOD, (message_handler_func_t)set_debounce_period},
-	{TYPE_GET_DEBOUNCE_PERIOD, (message_handler_func_t)get_debounce_period},
-	{TYPE_SET_INTERRUPT, (message_handler_func_t)set_interrupt},
-	{TYPE_GET_INTERRUPT, (message_handler_func_t)get_interrupt},
-};
+void invocation(const ComType com, const uint8_t *data) {
+	switch(((MessageHeader*)data)->fid) {
+		case FID_GET_VALUE: {
+			get_value(com, (GetValue*)data);
+			break;
+		}
 
-void invocation(uint8_t com, uint8_t *data) {
-	uint8_t id = ((StandardMessage*)data)->type - 1;
-	if(id < NUM_MESSAGES) {
-		BRICKLET_OFFSET(com_messages[id].reply_func)(com, data);
+		case FID_SET_GROUP: {
+			set_group(com, (SetGroup*)data);
+			break;
+		}
+
+		case FID_GET_GROUP: {
+			get_group(com, (GetGroup*)data);
+			break;
+		}
+
+		case FID_GET_AVAILABLE_FOR_GROUP: {
+			get_available_for_group(com, (GetAvailableForGroup*)data);
+			break;
+		}
+
+		case FID_SET_DEBOUNCE_PERIOD: {
+			set_debounce_period(com, (SetDebouncePeriod*)data);
+			break;
+		}
+
+		case FID_GET_DEBOUNCE_PERIOD: {
+			get_debounce_period(com, (GetDebouncePeriod*)data);
+			break;
+		}
+
+		case FID_SET_INTERRUPT: {
+			set_interrupt(com, (SetInterrupt*)data);
+			break;
+		}
+
+		case FID_GET_INTERRUPT: {
+			get_interrupt(com, (GetInterrupt*)data);
+			break;
+		}
+
+		default: {
+			BA->com_return_error(data, sizeof(MessageHeader), MESSAGE_ERROR_CODE_NOT_SUPPORTED, com);
+			break;
+		}
 	}
 }
 
@@ -100,7 +130,7 @@ uint16_t make_value(void) {
 	return value;
 }
 
-bool is_group_available(char group) {
+bool is_group_available(const char group) {
 	const int8_t diff = BS->port - group;
 	return (BCO(diff)->magic_number1 == MAGIC_NUMBER_INDUSTRIAL_DIGITAL_IN_4_1) &&
 	       (BCO(diff)->magic_number2 == MAGIC_NUMBER_INDUSTRIAL_DIGITAL_IN_4_2);
@@ -143,7 +173,7 @@ void reconfigure_group(void) {
 	}
 }
 
-void tick(uint8_t tick_type) {
+void tick(const uint8_t tick_type) {
 	if(tick_type & TICK_TASK_TYPE_CALCULATION) {
 		if(BC->counter != 0) {
 			BC->counter--;
@@ -164,13 +194,10 @@ void tick(uint8_t tick_type) {
 				}
 				BC->last_value = value;
 				if(interrupt != 0) {
-					InterruptSignal is = {
-						BS->stack_id,
-						TYPE_INTERRUPT,
-						sizeof(InterruptSignal),
-						interrupt,
-						value
-					};
+					InterruptSignal is;
+					BA->com_make_default_header(&is, BS->uid, sizeof(InterruptSignal), FID_INTERRUPT);
+					is.interrupt_mask = interrupt;
+					is.value_mask = value;
 
 					BA->send_blocking_with_timeout(&is,
 												   sizeof(InterruptSignal),
@@ -182,40 +209,41 @@ void tick(uint8_t tick_type) {
 	}
 }
 
-void get_value(uint8_t com, const GetValue *data) {
+void get_value(const ComType com, const GetValue *data) {
 	GetValueReturn gvr;
-
-	gvr.stack_id      = data->stack_id;
-	gvr.type          = data->type;
-	gvr.length        = sizeof(GetValueReturn);
+	gvr.header        = data->header;
+	gvr.header.length = sizeof(GetValueReturn);
 	gvr.value_mask    = make_value();
 
 	BA->send_blocking_with_timeout(&gvr, sizeof(GetValueReturn), com);
 }
 
-void set_group(uint8_t com, SetGroup *data) {
+void set_group(const ComType com, const SetGroup *data) {
 	for(uint8_t i = 0; i < 4; i++) {
-		if(data->group[i] < 'a') {
-			data->group[i] += 'a' - 'A';
+		char group = data->group[i];
+		if(group < 'a') {
+			group += 'a' - 'A';
 		}
-		if(data->group[i] >= 'a' &&
-           data->group[i] <= 'd' &&
-           is_group_available(data->group[i])) {
-			BC->group[i] = data->group[i];
+		if(group >= 'a' && group <= 'd' && is_group_available(group)) {
+			BC->group[i] = group;
 		} else {
 			BC->group[i] = 'n';
+			BA->com_return_error(data, com, MESSAGE_ERROR_CODE_INVALID_PARAMETER, sizeof(MessageHeader));
+			reconfigure_group();
+			return;
 		}
 	}
 
 	reconfigure_group();
+
+	BA->com_return_setter(com, data);
 }
 
-void get_group(uint8_t com, GetGroup *data) {
+void get_group(const ComType com, const GetGroup *data) {
 	GetGroupReturn ggr;
 
-	ggr.stack_id       = data->stack_id;
-	ggr.type           = data->type;
-	ggr.length         = sizeof(GetGroupReturn);
+	ggr.header         = data->header;
+	ggr.header.length  = sizeof(GetGroupReturn);
 	ggr.group[0]       = BC->group[0];
 	ggr.group[1]       = BC->group[1];
 	ggr.group[2]       = BC->group[2];
@@ -224,12 +252,11 @@ void get_group(uint8_t com, GetGroup *data) {
 	BA->send_blocking_with_timeout(&ggr, sizeof(GetGroupReturn), com);
 }
 
-void get_available_for_group(uint8_t com, GetAvailableForGroup *data) {
+void get_available_for_group(const ComType com, const GetAvailableForGroup *data) {
 	GetAvailableForGroupReturn gafgr;
 
-	gafgr.stack_id       = data->stack_id;
-	gafgr.type           = data->type;
-	gafgr.length         = sizeof(GetAvailableForGroupReturn);
+	gafgr.header         = data->header;
+	gafgr.header.length  = sizeof(GetAvailableForGroupReturn);
 	gafgr.available      = 0;
 
 	for(uint8_t i = 0; i < 4; i++) {
@@ -241,31 +268,33 @@ void get_available_for_group(uint8_t com, GetAvailableForGroup *data) {
 	BA->send_blocking_with_timeout(&gafgr, sizeof(GetAvailableForGroupReturn), com);
 }
 
-void set_debounce_period(uint8_t com, const SetDebouncePeriod *data) {
+void set_debounce_period(const ComType com, const SetDebouncePeriod *data) {
 	BC->debounce_period = data->debounce;
+
+	BA->com_return_setter(com, data);
 }
 
-void get_debounce_period(uint8_t com, const GetDebouncePeriod *data) {
+void get_debounce_period(const ComType com, const GetDebouncePeriod *data) {
 	GetDebouncePeriodReturn gdpr;
 
-	gdpr.stack_id       = data->stack_id;
-	gdpr.type           = data->type;
-	gdpr.length         = sizeof(GetDebouncePeriodReturn);
+	gdpr.header         = data->header;
+	gdpr.header.length  = sizeof(GetDebouncePeriodReturn);
 	gdpr.debounce       = BC->debounce_period;
 
 	BA->send_blocking_with_timeout(&gdpr, sizeof(GetDebouncePeriodReturn), com);
 }
 
-void set_interrupt(uint8_t com, const SetInterrupt *data) {
+void set_interrupt(const ComType com, const SetInterrupt *data) {
 	BC->interrupt = data->interrupt_mask;
+
+	BA->com_return_setter(com, data);
 }
 
-void get_interrupt(uint8_t com, const GetInterrupt *data) {
+void get_interrupt(const ComType com, const GetInterrupt *data) {
 	GetInterruptReturn gir;
 
-	gir.stack_id       = data->stack_id;
-	gir.type           = data->type;
-	gir.length         = sizeof(GetInterruptReturn);
+	gir.header         = data->header;
+	gir.header.length  = sizeof(GetInterruptReturn);
 	gir.interrupt_mask = BC->interrupt;
 
 	BA->send_blocking_with_timeout(&gir, sizeof(GetInterruptReturn), com);

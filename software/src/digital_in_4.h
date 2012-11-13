@@ -24,133 +24,105 @@
 
 #include <stdint.h>
 
-#define TYPE_GET_VALUE 1
-#define TYPE_SET_GROUP 2
-#define TYPE_GET_GROUP 3
-#define TYPE_GET_AVAILABLE_FOR_GROUP 4
-#define TYPE_SET_DEBOUNCE_PERIOD 5
-#define TYPE_GET_DEBOUNCE_PERIOD 6
-#define TYPE_SET_INTERRUPT 7
-#define TYPE_GET_INTERRUPT 8
-#define TYPE_INTERRUPT 9
+#include "bricklib/com/com_common.h"
+
+#define FID_GET_VALUE 1
+#define FID_SET_GROUP 2
+#define FID_GET_GROUP 3
+#define FID_GET_AVAILABLE_FOR_GROUP 4
+#define FID_SET_DEBOUNCE_PERIOD 5
+#define FID_GET_DEBOUNCE_PERIOD 6
+#define FID_SET_INTERRUPT 7
+#define FID_GET_INTERRUPT 8
+#define FID_INTERRUPT 9
 
 #define NUM_MESSAGES 9
 
 typedef struct {
-	uint8_t stack_id;
-	uint8_t type;
-	uint16_t length;
+	MessageHeader header;
 } __attribute__((__packed__)) GetValue;
 
 typedef struct {
-	uint8_t stack_id;
-	uint8_t type;
-	uint16_t length;
+	MessageHeader header;
 	uint16_t value_mask;
 } __attribute__((__packed__)) GetValueReturn;
 
 typedef struct {
-	uint8_t stack_id;
-	uint8_t type;
-	uint16_t length;
+	MessageHeader header;
 	char group[4];
 } __attribute__((__packed__)) SetGroup;
 
 typedef struct {
-	uint8_t stack_id;
-	uint8_t type;
-	uint16_t length;
+	MessageHeader header;
 } __attribute__((__packed__)) GetGroup;
 
 typedef struct {
-	uint8_t stack_id;
-	uint8_t type;
-	uint16_t length;
+	MessageHeader header;
 	char group[4];
 } __attribute__((__packed__)) GetGroupReturn;
 
 typedef struct {
-	uint8_t stack_id;
-	uint8_t type;
-	uint16_t length;
+	MessageHeader header;
 } __attribute__((__packed__)) GetAvailableForGroup;
 
 typedef struct {
-	uint8_t stack_id;
-	uint8_t type;
-	uint16_t length;
+	MessageHeader header;
 	uint8_t available;
 } __attribute__((__packed__)) GetAvailableForGroupReturn;
 
 typedef struct {
-	uint8_t stack_id;
-	uint8_t type;
-	uint16_t length;
+	MessageHeader header;
 	uint32_t debounce;
 } __attribute__((__packed__)) SetDebouncePeriod;
 
 typedef struct {
-	uint8_t stack_id;
-	uint8_t type;
-	uint16_t length;
+	MessageHeader header;
 } __attribute__((__packed__)) GetDebouncePeriod;
 
 typedef struct {
-	uint8_t stack_id;
-	uint8_t type;
-	uint16_t length;
+	MessageHeader header;
 	uint32_t debounce;
 } __attribute__((__packed__)) GetDebouncePeriodReturn;
 
 typedef struct {
-	uint8_t stack_id;
-	uint8_t type;
-	uint16_t length;
+	MessageHeader header;
 	uint16_t interrupt_mask;
 } __attribute__((__packed__)) SetInterrupt;
 
 typedef struct {
-	uint8_t stack_id;
-	uint8_t type;
-	uint16_t length;
+	MessageHeader header;
 } __attribute__((__packed__)) GetInterrupt;
 
 typedef struct {
-	uint8_t stack_id;
-	uint8_t type;
-	uint16_t length;
+	MessageHeader header;
 	uint16_t interrupt_mask;
 } __attribute__((__packed__)) GetInterruptReturn;
 
 typedef struct {
-	uint8_t stack_id;
-	uint8_t type;
-	uint16_t length;
+	MessageHeader header;
 	uint16_t interrupt_mask;
 	uint16_t value_mask;
 } __attribute__((__packed__)) InterruptSignal;
 
 typedef struct {
-	uint8_t stack_id;
-	uint8_t type;
-	uint16_t length;
+	MessageHeader header;
 } __attribute__((__packed__)) StandardMessage;
 
-void get_value(uint8_t com, const GetValue *data);
-void set_group(uint8_t com, SetGroup *data);
-void get_group(uint8_t com, GetGroup *data);
-void get_available_for_group(uint8_t com, GetAvailableForGroup *data);
-void set_debounce_period(uint8_t com, const SetDebouncePeriod *data);
-void get_debounce_period(uint8_t com, const GetDebouncePeriod *data);
-void set_interrupt(uint8_t com, const SetInterrupt *data);
-void get_interrupt(uint8_t com, const GetInterrupt *data);
+void get_value(const ComType com, const GetValue *data);
+void set_group(const ComType com, const SetGroup *data);
+void get_group(const ComType com, const GetGroup *data);
+void get_available_for_group(const ComType com, const GetAvailableForGroup *data);
+void set_debounce_period(const ComType com, const SetDebouncePeriod *data);
+void get_debounce_period(const ComType com, const GetDebouncePeriod *data);
+void set_interrupt(const ComType com, const SetInterrupt *data);
+void get_interrupt(const ComType com, const GetInterrupt *data);
 
 uint16_t make_value(void);
 void reconfigure_group(void);
 void reconfigure_pins(void);
-void invocation(uint8_t com, uint8_t *data);
+void invocation(const ComType com, const uint8_t *data);
 void constructor(void);
 void destructor(void);
-void tick(uint8_t tick_type);
+void tick(const uint8_t tick_type);
 
 #endif
