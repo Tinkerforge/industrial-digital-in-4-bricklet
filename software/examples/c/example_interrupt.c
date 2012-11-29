@@ -9,32 +9,32 @@
 #define UID "xyz" // Change to your UID
 
 // Callback function for interrupts
-void cb_interrupt(uint8_t interrupt_mask, uint8_t value_mask) {
+void cb_interrupt(uint8_t interrupt_mask, uint8_t value_mask, void *user_data) {
 	printf("Interrupt by: %d\n", interrupt_mask);
 	printf("Value: %d\n", value_mask);
 }
 
 int main() {
-	// Create IP connectidi4n to brickd
+	// Create IP connection
 	IPConnection ipcon;
-	if(ipcon_create(&ipcon, HOST, PORT) < 0) {
-		fprintf(stderr, "Could not create connectidi4n\n");
-		exit(1);
-	}
+	ipcon_create(&ipcon);
 
 	// Create device object
 	IndustrialDigitalIn4 idi4;
-	industrial_digital_in_4_create(&idi4, UID); 
+	industrial_digital_in_4_create(&idi4, UID, &ipcon); 
 
-	// Add device to IP connectidi4n
-	if(ipcon_add_device(&ipcon, &idi4) < 0) {
-		fprintf(stderr, "Could not connect to Bricklet\n");
+	// Connect to brickd
+	if(ipcon_connect(&ipcon, HOST, PORT) < 0) {
+		fprintf(stderr, "Could not connect\n");
 		exit(1);
 	}
-	// Don't use device before it is added to a connectidi4n
+	// Don't use device before ipcon is connected
 
 	// Register callback for interrupts
-	industrial_digital_in_4_register_callback(&idi4, INDUSTRIAL_DIGITAL_IN_4_CALLBACK_INTERRUPT, cb_interrupt);
+	industrial_digital_in_4_register_callback(&idi4, 
+	                                          INDUSTRIAL_DIGITAL_IN_4_CALLBACK_INTERRUPT, 
+											  cb_interrupt,
+											  NULL);
 
 	// Enable interrupt on pin 0
 	industrial_digital_in_4_set_interrupt(&idi4, 1 << 0);
