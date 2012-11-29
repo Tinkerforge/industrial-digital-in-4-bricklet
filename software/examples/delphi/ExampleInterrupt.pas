@@ -12,7 +12,7 @@ type
     ipcon: TIPConnection;
     idi4: TBrickletIndustrialDigitalIn4;
   public
-    procedure InterruptCB(const interruptMask: Word; const valueMask: Word);
+    procedure InterruptCB(sender: TObject; const interruptMask: Word; const valueMask: Word);
     procedure Execute;
   end;
 
@@ -25,7 +25,7 @@ var
   e: TExample;
 
 { Callback function for interrupts }
-procedure TExample.InterruptCB(const interruptMask: Word; const valueMask: Word);
+procedure TExample.InterruptCB(sender: TObject; const interruptMask: Word; const valueMask: Word);
 begin
   WriteLn(Format('Interrupt by: %d', [interruptMask]));
   WriteLn(Format('Value: %d', [valueMask]));
@@ -33,15 +33,15 @@ end;
 
 procedure TExample.Execute;
 begin
-  { Create IP connection to brickd }
-  ipcon := TIPConnection.Create(HOST, PORT);
+  { Create IP connection }
+  ipcon := TIPConnection.Create();
 
   { Create device object }
-  idi4 := TBrickletIndustrialDigitalIn4.Create(UID);
+  idi4 := TBrickletIndustrialDigitalIn4.Create(UID, ipcon);
 
-  { Add device to IP connection }
-  ipcon.AddDevice(idi4);
-  { Don't use device before it is added to a connection }
+  { Connect to brickd }
+  ipcon.Connect(HOST, PORT);
+  { Don't use device before ipcon is connected }
 
   { Register callback for interrupts }
   idi4.OnInterrupt := {$ifdef FPC}@{$endif}InterruptCB;
@@ -51,7 +51,6 @@ begin
 
   WriteLn('Press key to exit');
   ReadLn;
-  ipcon.Destroy;
 end;
 
 begin
