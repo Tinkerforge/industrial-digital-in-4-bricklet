@@ -8,17 +8,16 @@ class Example
 
 	static void Main() 
 	{
-		IPConnection ipcon = new IPConnection(HOST, PORT); // Create connection to brickd
-		BrickletIndustrialDigitalIn4 idi4 = new BrickletIndustrialDigitalIn4(UID); // Create device object
-		ipcon.AddDevice(idi4); // Add device to IP connection
-		// Don't use device before it is added to a connection
+		IPConnection ipcon = new IPConnection(); // Create IP connection
+		BrickletIndustrialDigitalIn4 idi4 = new BrickletIndustrialDigitalIn4(UID, ipcon); // Create device object
+
+		ipcon.Connect(HOST, PORT); // Connect to brickd
+		// Don't use device before ipcon is connected
 
 		// Read out values as bitmask
 		int value = idi4.GetValue();
 		System.Console.WriteLine("Value: " + value);
 
 		System.Console.WriteLine("Press key to exit");
-		System.Console.ReadKey();
-		ipcon.Destroy();
 	}
 }
