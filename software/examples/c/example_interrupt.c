@@ -10,6 +10,8 @@
 
 // Callback function for interrupts
 void cb_interrupt(uint8_t interrupt_mask, uint8_t value_mask, void *user_data) {
+	(void)user_data; // avoid unused parameter warning
+
 	printf("Interrupt by: %d\n", interrupt_mask);
 	printf("Value: %d\n", value_mask);
 }
@@ -31,10 +33,10 @@ int main() {
 	// Don't use device before ipcon is connected
 
 	// Register callback for interrupts
-	industrial_digital_in_4_register_callback(&idi4, 
-	                                          INDUSTRIAL_DIGITAL_IN_4_CALLBACK_INTERRUPT, 
-											  cb_interrupt,
-											  NULL);
+	industrial_digital_in_4_register_callback(&idi4,
+	                                          INDUSTRIAL_DIGITAL_IN_4_CALLBACK_INTERRUPT,
+	                                          cb_interrupt,
+	                                          NULL);
 
 	// Enable interrupt on pin 0
 	industrial_digital_in_4_set_interrupt(&idi4, 1 << 0);
