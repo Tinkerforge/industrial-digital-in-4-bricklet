@@ -102,7 +102,7 @@ void destructor(void) {
 		if(BC->pins[i] != NULL) {
 			BC->pins[i]->type = PIO_INPUT;
 			BC->pins[i]->attribute = PIO_PULLUP;
-			BA->PIO_Configure(BC->pins[i], NUM_PINS);
+			BA->PIO_Configure(BC->pins[i], 1);
 		}
 	}
 }
