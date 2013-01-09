@@ -7,7 +7,7 @@ class Example
 	private static string UID = "xyz"; // Change to your UID
 
 	// Callback function for interrupts
-	static void InterruptCB(object sender, int interruptMask, int valueMask)
+	static void InterruptCB(BrickletIndustrialDigitalIn4 sender, int interruptMask, int valueMask)
 	{
 		string interruptBinary = System.Convert.ToString(interruptMask, 2);
 		string valueBinary = System.Convert.ToString(valueMask, 2);
