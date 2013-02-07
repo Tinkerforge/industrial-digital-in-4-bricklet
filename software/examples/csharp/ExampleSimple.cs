@@ -19,5 +19,6 @@ class Example
 		System.Console.WriteLine("Value: " + value);
 
 		System.Console.WriteLine("Press key to exit");
+		ipcon.Disconnect();
 	}
 }

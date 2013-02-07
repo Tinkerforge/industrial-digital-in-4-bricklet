@@ -17,8 +17,9 @@ ipcon.connect HOST, PORT # Connect to brickd
 # Don't use device before ipcon is connected
 
 # Read out values as bitmask
-value = idi4.get_value()
+value = idi4.get_value
 puts "Value: #{value}"
 
 puts 'Press key to exit'
 $stdin.gets
+ipcon.disconnect

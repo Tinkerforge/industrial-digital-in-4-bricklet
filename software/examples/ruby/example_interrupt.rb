@@ -27,3 +27,4 @@ idi4.set_interrupt 1 << 0
 
 puts 'Press key to exit'
 $stdin.gets
+ipcon.disconnect

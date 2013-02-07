@@ -27,3 +27,4 @@ if __name__ == "__main__":
     idi4.set_interrupt(1 << 0)
 
     raw_input('Press key to exit\n') # Use input() in Python 3
+    ipcon.disconnect()

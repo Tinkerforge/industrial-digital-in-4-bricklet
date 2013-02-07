@@ -20,5 +20,6 @@ public class ExampleSimple {
 		System.out.println("value: " + value);
 
 		System.console().readLine("Press key to exit\n");
+		ipcon.disconnect();
 	}
 }
