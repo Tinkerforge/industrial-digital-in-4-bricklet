@@ -16,9 +16,11 @@ class Example
 
 		// Read out values as bitmask
 		int value = idi4.GetValue();
+
 		System.Console.WriteLine("Value: " + value);
 
 		System.Console.WriteLine("Press key to exit");
+		System.Console.ReadKey();
 		ipcon.Disconnect();
 	}
 }
