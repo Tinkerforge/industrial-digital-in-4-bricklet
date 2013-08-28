@@ -33,7 +33,7 @@
 
 #define BRICKLET_FIRMWARE_VERSION_MAJOR 2
 #define BRICKLET_FIRMWARE_VERSION_MINOR 0
-#define BRICKLET_FIRMWARE_VERSION_REVISION 0
+#define BRICKLET_FIRMWARE_VERSION_REVISION 1
 
 #define BRICKLET_HARDWARE_VERSION_MAJOR 1
 #define BRICKLET_HARDWARE_VERSION_MINOR 0
@@ -61,6 +61,12 @@ typedef struct {
 	uint32_t debounce_period;
 	uint32_t magic_number1;
 	uint32_t magic_number2;
+
+	uint32_t edge_count[NUM_PINS];
+	uint8_t edge_type[NUM_PINS];
+	uint8_t edge_debounce[NUM_PINS];
+	uint8_t edge_debounce_counter[NUM_PINS];
+	uint8_t edge_last_state[NUM_PINS];
 } BrickContext;
 
 #endif

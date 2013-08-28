@@ -70,6 +70,21 @@ void invocation(const ComType com, const uint8_t *data) {
 			break;
 		}
 
+		case FID_GET_EDGE_COUNT: {
+			get_edge_count(com, (GetEdgeCount*)data);
+			break;
+		}
+
+		case FID_SET_EDGE_COUNT_CONFIG: {
+			set_edge_count_config(com, (SetEdgeCountConfig*)data);
+			break;
+		}
+
+		case FID_GET_EDGE_COUNT_CONFIG: {
+			get_edge_count_config(com, (GetEdgeCountConfig*)data);
+			break;
+		}
+
 		default: {
 			BA->com_return_error(data, sizeof(MessageHeader), MESSAGE_ERROR_CODE_NOT_SUPPORTED, com);
 			break;
@@ -95,6 +110,8 @@ void constructor(void) {
 	BC->interrupt = 0;
 	BC->debounce_period = 100;
 	BC->last_value = ~make_value();
+
+	reset_all_edge_counters();
 }
 
 void destructor(void) {
@@ -159,17 +176,29 @@ void reconfigure_group(void) {
 			const uint8_t start = i*4;
 			const int8_t diff = BS->port - BC->group[i];
 			if(diff > -4 && diff < 4) {
-				BC->pins[start] = &BSO(diff)->pin1_ad;
+				BC->pins[start+0] = &BSO(diff)->pin1_ad;
 				BC->pins[start+1] = &BSO(diff)->pin2_da;
 				BC->pins[start+2] = &BSO(diff)->pin3_pwm;
 				BC->pins[start+3] = &BSO(diff)->pin4_io;
 			} else {
-				BC->pins[start] = NULL;
+				BC->pins[start+0] = NULL;
 				BC->pins[start+1] = NULL;
 				BC->pins[start+2] = NULL;
 				BC->pins[start+3] = NULL;
 			}
 		}
+	}
+
+	reset_all_edge_counters();
+}
+
+void reset_all_edge_counters(void) {
+	for(uint8_t i = 0; i < NUM_PINS; i++) {
+		BC->edge_count[i] = 0;
+		BC->edge_type[i] = EDGE_TYPE_RISING;
+		BC->edge_debounce[i] = 100;
+		BC->edge_debounce_counter[i] = 0;
+		BC->edge_last_state[i] = !(BC->pins[i]->pio->PIO_PDSR & BC->pins[i]->mask) ? 1 : 0;
 	}
 }
 
@@ -177,6 +206,32 @@ void tick(const uint8_t tick_type) {
 	if(tick_type & TICK_TASK_TYPE_CALCULATION) {
 		if(BC->counter != 0) {
 			BC->counter--;
+		}
+
+		// edge counter
+		for(uint8_t i = 0; i < NUM_PINS; i++) {
+			if(BC->edge_debounce_counter[i] != 0) {
+				BC->edge_debounce_counter[i]--;
+			}
+
+			if(BC->edge_debounce_counter[i] == 0 && BC->pins[i] != NULL) {
+				uint8_t state = !(BC->pins[i]->pio->PIO_PDSR & BC->pins[i]->mask) ? 1 : 0;
+
+				if(state != BC->edge_last_state[i]) {
+					BC->edge_last_state[i] = state;
+					BC->edge_debounce_counter[i] = BC->edge_debounce[i];
+
+					if(state) {
+						if(BC->edge_type[i] == EDGE_TYPE_RISING || BC->edge_type[i] == EDGE_TYPE_BOTH) {
+							BC->edge_count[i]++;
+						}
+					} else {
+						if(BC->edge_type[i] == EDGE_TYPE_FALLING || BC->edge_type[i] == EDGE_TYPE_BOTH) {
+							BC->edge_count[i]++;
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -302,4 +357,60 @@ void get_interrupt(const ComType com, const GetInterrupt *data) {
 	gir.interrupt_mask = BC->interrupt;
 
 	BA->send_blocking_with_timeout(&gir, sizeof(GetInterruptReturn), com);
+}
+
+void get_edge_count(const ComType com, const GetEdgeCount *data) {
+	if(data->pin >= NUM_PINS) {
+		BA->com_return_error(data, sizeof(GetEdgeCountReturn), MESSAGE_ERROR_CODE_INVALID_PARAMETER, com);
+		return;
+	}
+
+	GetEdgeCountReturn gecr;
+
+	gecr.header        = data->header;
+	gecr.header.length = sizeof(GetEdgeCountReturn);
+	gecr.count         = BC->edge_count[data->pin];
+
+	BA->send_blocking_with_timeout(&gecr,
+	                               sizeof(GetEdgeCountReturn),
+	                               com);
+
+	if(data->reset_counter) {
+		BC->edge_count[data->pin] = 0;
+	}
+}
+
+void set_edge_count_config(const ComType com, const SetEdgeCountConfig *data) {
+	if(data->edge_type > EDGE_TYPE_BOTH) {
+		BA->com_return_error(data, sizeof(MessageHeader), MESSAGE_ERROR_CODE_INVALID_PARAMETER, com);
+		return;
+	}
+
+	for(uint8_t i = 0; i < NUM_PINS; i++) {
+		if(data->selection_mask & (1 << i)) {
+			BC->edge_type[i] = data->edge_type;
+			BC->edge_debounce[i] = data->debounce;
+			BC->edge_count[i] = 0;
+		}
+	}
+
+	BA->com_return_setter(com, data);
+}
+
+void get_edge_count_config(const ComType com, const GetEdgeCountConfig *data) {
+	if(data->pin >= NUM_PINS) {
+		BA->com_return_error(data, sizeof(GetEdgeCountConfigReturn), MESSAGE_ERROR_CODE_INVALID_PARAMETER, com);
+		return;
+	}
+
+	GetEdgeCountConfigReturn geccr;
+
+	geccr.header        = data->header;
+	geccr.header.length = sizeof(GetEdgeCountConfigReturn);
+	geccr.edge_type     = BC->edge_type[data->pin];
+	geccr.debounce      = BC->edge_debounce[data->pin];
+
+	BA->send_blocking_with_timeout(&geccr,
+	                               sizeof(GetEdgeCountConfigReturn),
+	                               com);
 }

@@ -26,6 +26,10 @@
 
 #include "bricklib/com/com_common.h"
 
+#define EDGE_TYPE_RISING  0
+#define EDGE_TYPE_FALLING 1
+#define EDGE_TYPE_BOTH    2
+
 #define FID_GET_VALUE 1
 #define FID_SET_GROUP 2
 #define FID_GET_GROUP 3
@@ -35,8 +39,9 @@
 #define FID_SET_INTERRUPT 7
 #define FID_GET_INTERRUPT 8
 #define FID_INTERRUPT 9
-
-#define NUM_MESSAGES 9
+#define FID_GET_EDGE_COUNT 10
+#define FID_SET_EDGE_COUNT_CONFIG 11
+#define FID_GET_EDGE_COUNT_CONFIG 12
 
 typedef struct {
 	MessageHeader header;
@@ -106,6 +111,35 @@ typedef struct {
 
 typedef struct {
 	MessageHeader header;
+	uint8_t pin;
+	bool reset_counter;
+} __attribute__((__packed__)) GetEdgeCount;
+
+typedef struct {
+	MessageHeader header;
+	uint32_t count;
+} __attribute__((__packed__)) GetEdgeCountReturn;
+
+typedef struct {
+	MessageHeader header;
+	uint16_t selection_mask;
+	uint8_t edge_type;
+	uint8_t debounce;
+} __attribute__((__packed__)) SetEdgeCountConfig;
+
+typedef struct {
+	MessageHeader header;
+	uint8_t pin;
+} __attribute__((__packed__)) GetEdgeCountConfig;
+
+typedef struct {
+	MessageHeader header;
+	uint8_t edge_type;
+	uint8_t debounce;
+} __attribute__((__packed__)) GetEdgeCountConfigReturn;
+
+typedef struct {
+	MessageHeader header;
 } __attribute__((__packed__)) StandardMessage;
 
 void get_value(const ComType com, const GetValue *data);
@@ -116,10 +150,14 @@ void set_debounce_period(const ComType com, const SetDebouncePeriod *data);
 void get_debounce_period(const ComType com, const GetDebouncePeriod *data);
 void set_interrupt(const ComType com, const SetInterrupt *data);
 void get_interrupt(const ComType com, const GetInterrupt *data);
+void get_edge_count(const ComType com, const GetEdgeCount *data);
+void set_edge_count_config(const ComType com, const SetEdgeCountConfig *data);
+void get_edge_count_config(const ComType com, const GetEdgeCountConfig *data);
 
 uint16_t make_value(void);
 void reconfigure_group(void);
 void reconfigure_pins(void);
+void reset_all_edge_counters(void);
 void invocation(const ComType com, const uint8_t *data);
 void constructor(void);
 void destructor(void);
