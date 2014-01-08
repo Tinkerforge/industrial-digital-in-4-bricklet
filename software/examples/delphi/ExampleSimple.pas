@@ -37,7 +37,7 @@ begin
   { Don't use device before ipcon is connected }
 
   { Read out values as bitmask }
-  value := idi4.GetValue();
+  value := idi4.GetValue;
   WriteLn(Format('Value: %d', [value]));
 
   WriteLn('Press key to exit');
