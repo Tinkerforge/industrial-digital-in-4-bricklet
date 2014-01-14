@@ -8,9 +8,9 @@ use constant PORT => 4223;
 use constant UID => 'hsD'; # Change to your UID
 
 # Callback function for interrupts
-sub cb_interrupt(interrupt_mask, value_mask)
+sub cb_interrupt
 {
-	my($interrupt_mask, $value_mask) = @_;
+    my($interrupt_mask, $value_mask) = @_;
 
     print "\nInterrupt by: ".sprintf('%b', $interrupt_mask);
     print "\nValue: ".sprintf('%b', $value_mask)."\n";
