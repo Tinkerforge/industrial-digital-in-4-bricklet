@@ -15,8 +15,8 @@ sub cb_interrupt
     print "\nInterrupt by: ".sprintf('%b', $interrupt_mask);
     print "\nValue: ".sprintf('%b', $value_mask)."\n";
 }
-my $ipcon = IPConnection->new(); # Create IP connection
-my $idi4 = BrickletIndustrialDigitalIn4->new(&UID, $ipcon); # Create device object
+my $ipcon = Tinkerforge::IPConnection->new(); # Create IP connection
+my $idi4 = Tinkerforge::BrickletIndustrialDigitalIn4->new(&UID, $ipcon); # Create device object
 
 $ipcon->connect(&HOST, &PORT); # Connect to brickd
 # Don't use device before ipcon is connected
