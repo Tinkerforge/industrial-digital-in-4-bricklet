@@ -1,12 +1,11 @@
-var IPConnection = require('Tinkerforge/IPConnection');
-var BrickletIndustrialDigitalIn4 = require('Tinkerforge/BrickletIndustrialDigitalIn4');
+var Tinkerforge = require('tinkerforge');
 
 var HOST = 'localhost';
 var PORT = 4223;
 var UID = 'hxF';// Change to your UID
 
-var ipcon = new IPConnection();// Create IP connection
-var idi4 = new BrickletIndustrialDigitalIn4(UID, ipcon);// Create device object
+var ipcon = new Tinkerforge.IPConnection();// Create IP connection
+var idi4 = new Tinkerforge.BrickletIndustrialDigitalIn4(UID, ipcon);// Create device object
 
 ipcon.connect(HOST, PORT,
     function(error) {
@@ -15,7 +14,7 @@ ipcon.connect(HOST, PORT,
 );// Connect to brickd
 
 // Don't use device before ipcon is connected
-ipcon.on(IPConnection.CALLBACK_CONNECTED,
+ipcon.on(Tinkerforge.IPConnection.CALLBACK_CONNECTED,
     function(connectReason) {
         // Read out values as bitmask
         idi4.getValue(
