@@ -14,8 +14,9 @@ $ipcon->connect(&HOST, &PORT); # Connect to brickd
 # Don't use device before ipcon is connected
 
 # Read out values as bitmask
-print "\nValue: ".sprintf("%b", $idi4->get_value());
+my $value = $idi4->get_value();
+print "Value: ".sprintf("%b", $value)."\n";
 
-print "\nPress any key to exit...\n";
+print "Press any key to exit...\n";
 <STDIN>;
 $ipcon->disconnect();
