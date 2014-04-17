@@ -15,6 +15,6 @@ function octave_example_simple
     value = idi4.getValue();
     fprintf("Value: %s\n", dec2bin(value));
     
-    input("\nPress any key to exit...\n", "s");
+    input("Press any key to exit...\n", "s");
     ipcon.disconnect();
 end
