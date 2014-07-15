@@ -27,7 +27,7 @@ public class ExampleInterrupt {
 		// Enable interrupt on pin 0
 		idi4.setInterrupt(1 << 0);
 
-		System.console().readLine("Press key to exit\n");
+		System.out.println("Press key to exit"); System.in.read();
 		ipcon.disconnect();
 	}
 }
