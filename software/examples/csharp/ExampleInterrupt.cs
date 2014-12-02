@@ -31,8 +31,8 @@ class Example
 		// Enable interrupt on pin 0
 		idi4.SetInterrupt(1 << 0);
 
-		System.Console.WriteLine("Press key to exit");
-		System.Console.ReadKey();
+		System.Console.WriteLine("Press enter to exit");
+		System.Console.ReadLine();
 		ipcon.Disconnect();
 	}
 }

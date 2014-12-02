@@ -20,8 +20,8 @@ class Example
 
 		System.Console.WriteLine("Value: " + value);
 
-		System.Console.WriteLine("Press key to exit");
-		System.Console.ReadKey();
+		System.Console.WriteLine("Press enter to exit");
+		System.Console.ReadLine();
 		ipcon.Disconnect();
 	}
 }
