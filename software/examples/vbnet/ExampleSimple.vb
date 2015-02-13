@@ -18,7 +18,7 @@ Module ExampleSimple
         System.Console.WriteLine("Value: " + value.ToString())
 
         System.Console.WriteLine("Press key to exit")
-        System.Console.ReadKey()
+        System.Console.ReadLine()
         ipcon.Disconnect()
     End Sub
 End Module
