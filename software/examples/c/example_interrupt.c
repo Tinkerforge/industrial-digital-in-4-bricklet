@@ -5,7 +5,7 @@
 
 #define HOST "localhost"
 #define PORT 4223
-#define UID "xyz" // Change to your UID
+#define UID "XYZ" // Change to your UID
 
 // Callback function for interrupts
 void cb_interrupt(uint8_t interrupt_mask, uint8_t value_mask, void *user_data) {
@@ -22,7 +22,7 @@ int main() {
 
 	// Create device object
 	IndustrialDigitalIn4 idi4;
-	industrial_digital_in_4_create(&idi4, UID, &ipcon); 
+	industrial_digital_in_4_create(&idi4, UID, &ipcon);
 
 	// Connect to brickd
 	if(ipcon_connect(&ipcon, HOST, PORT) < 0) {

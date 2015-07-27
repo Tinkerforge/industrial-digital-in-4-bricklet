@@ -8,7 +8,7 @@ include Tinkerforge
 
 HOST = 'localhost'
 PORT = 4223
-UID = 'xyz' # Change to your UID
+UID = 'XYZ' # Change to your UID
 
 ipcon = IPConnection.new # Create IP connection
 idi4 = BrickletIndustrialDigitalIn4.new UID, ipcon # Create device object
