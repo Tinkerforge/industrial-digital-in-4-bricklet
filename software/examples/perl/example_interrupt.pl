@@ -1,11 +1,11 @@
-#!/usr/bin/perl  
+#!/usr/bin/perl
 
 use Tinkerforge::IPConnection;
 use Tinkerforge::BrickletIndustrialDigitalIn4;
 
 use constant HOST => 'localhost';
 use constant PORT => 4223;
-use constant UID => 'hsD'; # Change to your UID
+use constant UID => 'XYZ'; # Change to your UID
 
 # Callback function for interrupts
 sub cb_interrupt
