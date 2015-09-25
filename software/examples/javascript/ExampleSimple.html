@@ -34,20 +34,20 @@
                 var idi4 = new Tinkerforge.BrickletIndustrialDigitalIn4(UID, ipcon); // Create device object
                 ipcon.connect(HOST, PORT,
                     function(error) {
-                        textArea.value += 'Error: '+error+ '\n';
+                        textArea.value += 'Error: ' + error + '\n';
                     }
                 ); // Connect to brickd
                 // Don't use device before ipcon is connected
 
                 ipcon.on(Tinkerforge.IPConnection.CALLBACK_CONNECTED,
-                    function(connectReason) {
-                        // Read out values as bitmask
+                    function (connectReason) {
+                        // Get current value as bitmask
                         idi4.getValue(
-                            function(value) {
-                                textArea.value += 'Value: '+parseInt(value).toString(2)+'\n';
+                            function (valueMask) {
+                                textArea.value += 'Value Mask: ' + valueMask.toString(2) + '\n';
                             },
-                            function(error) {
-                                textArea.value += 'Error: '+error+'\n';
+                            function (error) {
+                                textArea.value += 'Error: ' + error + '\n';
                             }
                         );
                     }
@@ -56,5 +56,3 @@
         </script>
     </body>
 </html>
-
-

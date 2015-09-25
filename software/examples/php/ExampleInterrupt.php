@@ -8,13 +8,14 @@ use Tinkerforge\BrickletIndustrialDigitalIn4;
 
 const HOST = 'localhost';
 const PORT = 4223;
-const UID = 'xyz'; // Change to your UID
+const UID = 'XYZ'; // Change to your UID
 
-// Callback function for interrupts
-function cb_interrupt($interruptMask, $valueMask)
+// Callback function for interrupt callback
+function cb_interrupt($interrupt_mask, $value_mask)
 {
-    echo "Interrupt by: " . decbin($interruptMask) . "\n";
-    echo "Value: " . decbin($valueMask) . "\n";
+    echo "Interrupt Mask: " . sprintf("%04b", $interrupt_mask) . "\n";
+    echo "Value Mask: " . sprintf("%04b", $value_mask) . "\n";
+    echo "\n";
 }
 
 $ipcon = new IPConnection(); // Create IP connection
@@ -23,7 +24,7 @@ $idi4 = new BrickletIndustrialDigitalIn4(UID, $ipcon); // Create device object
 $ipcon->connect(HOST, PORT); // Connect to brickd
 // Don't use device before ipcon is connected
 
-// Register callback for interrupts
+// Register interrupt callback to function cb_interrupt
 $idi4->registerCallback(BrickletIndustrialDigitalIn4::CALLBACK_INTERRUPT, 'cb_interrupt');
 
 // Enable interrupt on pin 0

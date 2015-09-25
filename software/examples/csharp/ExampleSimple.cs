@@ -1,3 +1,4 @@
+using System;
 using Tinkerforge;
 
 class Example
@@ -15,13 +16,12 @@ class Example
 		ipcon.Connect(HOST, PORT); // Connect to brickd
 		// Don't use device before ipcon is connected
 
-		// Read out values as bitmask
-		int value = idi4.GetValue();
+		// Get current value as bitmask
+		int valueMask = idi4.GetValue();
+		Console.WriteLine("Value Mask: " + Convert.ToString(valueMask, 2));
 
-		System.Console.WriteLine("Value: " + value);
-
-		System.Console.WriteLine("Press enter to exit");
-		System.Console.ReadLine();
+		Console.WriteLine("Press enter to exit");
+		Console.ReadLine();
 		ipcon.Disconnect();
 	}
 }

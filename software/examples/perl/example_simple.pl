@@ -13,10 +13,10 @@ my $idi4 = Tinkerforge::BrickletIndustrialDigitalIn4->new(&UID, $ipcon); # Creat
 $ipcon->connect(&HOST, &PORT); # Connect to brickd
 # Don't use device before ipcon is connected
 
-# Read out values as bitmask
-my $value = $idi4->get_value();
-print "Value: ".sprintf("%b", $value)."\n";
+# Get current value as bitmask
+my $value_mask = $idi4->get_value();
+print "Value Mask: " . sprintf('%04b', $value_mask) . "\n";
 
-print "Press any key to exit...\n";
+print "Press key to exit\n";
 <STDIN>;
 $ipcon->disconnect();

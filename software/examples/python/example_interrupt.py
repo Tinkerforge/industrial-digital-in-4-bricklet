@@ -8,10 +8,11 @@ UID = "XYZ" # Change to your UID
 from tinkerforge.ip_connection import IPConnection
 from tinkerforge.bricklet_industrial_digital_in_4 import BrickletIndustrialDigitalIn4
 
-# Callback function for interrupts
+# Callback function for interrupt callback
 def cb_interrupt(interrupt_mask, value_mask):
-    print('Interrupt by: ' + str(bin(interrupt_mask)))
-    print('Value: ' + str(bin(value_mask)))
+    print("Interrupt Mask: " + format(interrupt_mask, "04b"))
+    print("Value Mask: " + format(value_mask, "04b"))
+    print("")
 
 if __name__ == "__main__":
     ipcon = IPConnection() # Create IP connection
@@ -20,11 +21,11 @@ if __name__ == "__main__":
     ipcon.connect(HOST, PORT) # Connect to brickd
     # Don't use device before ipcon is connected
 
-    # Register callback for interrupts
+    # Register interrupt callback to function cb_interrupt
     idi4.register_callback(idi4.CALLBACK_INTERRUPT, cb_interrupt)
 
     # Enable interrupt on pin 0
     idi4.set_interrupt(1 << 0)
 
-    raw_input('Press key to exit\n') # Use input() in Python 3
+    raw_input("Press key to exit\n") # Use input() in Python 3
     ipcon.disconnect()

@@ -16,9 +16,9 @@ idi4 = BrickletIndustrialDigitalIn4.new UID, ipcon # Create device object
 ipcon.connect HOST, PORT # Connect to brickd
 # Don't use device before ipcon is connected
 
-# Read out values as bitmask
-value = idi4.get_value
-puts "Value: #{value}"
+# Get current value as bitmask
+value_mask = idi4.get_value
+puts "Value Mask: #{'%04b' % value_mask}"
 
 puts 'Press key to exit'
 $stdin.gets

@@ -3,17 +3,17 @@ LoadNETAssembly["Tinkerforge",NotebookDirectory[]<>"../../.."]
 
 host="localhost"
 port=4223
-uid="cno"(* Change to your UID *)
+uid="XYZ"(*Change to your UID*)
 
-(* Create IPConnection and device object *)
+(*Create IPConnection and device object*)
 ipcon=NETNew["Tinkerforge.IPConnection"]
 idi4=NETNew["Tinkerforge.BrickletIndustrialDigitalIn4",uid,ipcon]
 ipcon@Connect[host,port]
 
-(* Read out values as bitmask *)
-Print["Value: "<>StringJoin[Map[ToString,IntegerDigits[idi4@GetValue[],2,4]]]]
+(*Get current value as bitmask*)
+Print["Value Mask: "<>StringJoin[Map[ToString,IntegerDigits[idi4@GetValue[],2,4]]]]
 
-(* Clean up *)
+(*Clean up*)
 ipcon@Disconnect[]
 ReleaseNETObject[idi4]
 ReleaseNETObject[ipcon]

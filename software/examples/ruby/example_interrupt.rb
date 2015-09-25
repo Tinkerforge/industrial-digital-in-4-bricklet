@@ -16,10 +16,11 @@ idi4 = BrickletIndustrialDigitalIn4.new UID, ipcon # Create device object
 ipcon.connect HOST, PORT # Connect to brickd
 # Don't use device before ipcon is connected
 
-# Register callback for interrupts
+# Register interrupt callback
 idi4.register_callback(BrickletIndustrialDigitalIn4::CALLBACK_INTERRUPT) do |interrupt_mask, value_mask|
-  puts "Interrupt by: #{interrupt_mask.to_s 2}"
-  puts "Value: #{value_mask.to_s 2}"
+  puts "Interrupt Mask: #{'%04b' % interrupt_mask}"
+  puts "Value Mask: #{'%04b' % value_mask}"
+  puts ''
 end
 
 # Enable interrupt on pin 0

@@ -23,10 +23,14 @@ int main(void) {
 	}
 	// Don't use device before ipcon is connected
 
-	// Read out values as bitmask
-	uint16_t value;
-	industrial_digital_in_4_get_value(&idi4, &value);
-	printf("Value: %d\n", value);
+	// Get current value as bitmask
+	uint16_t value_mask;
+	if(industrial_digital_in_4_get_value(&idi4, &value_mask) < 0) {
+		fprintf(stderr, "Could not get value as bitmask, probably timeout\n");
+		return 1;
+	}
+
+	printf("Value Mask: %d\n", value_mask);
 
 	printf("Press key to exit\n");
 	getchar();

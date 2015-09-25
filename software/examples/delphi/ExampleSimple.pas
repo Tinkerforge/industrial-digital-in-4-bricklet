@@ -24,7 +24,7 @@ var
   e: TExample;
 
 procedure TExample.Execute;
-var value: word;
+var valueMask: word;
 begin
   { Create IP connection }
   ipcon := TIPConnection.Create;
@@ -36,9 +36,9 @@ begin
   ipcon.Connect(HOST, PORT);
   { Don't use device before ipcon is connected }
 
-  { Read out values as bitmask }
-  value := idi4.GetValue;
-  WriteLn(Format('Value: %d', [value]));
+  { Get current value as bitmask }
+  valueMask := idi4.GetValue;
+  WriteLn(Format('Value Mask: %d', [valueMask]));
 
   WriteLn('Press key to exit');
   ReadLn;

@@ -15,9 +15,9 @@ if __name__ == "__main__":
     ipcon.connect(HOST, PORT) # Connect to brickd
     # Don't use device before ipcon is connected
 
-    # Read out values as bitmask
-    value = idi4.get_value()
-    print('Value: ' + str(bin(value)))
+    # Get current value as bitmask
+    value_mask = idi4.get_value()
+    print("Value Mask: " + format(value_mask, "04b"))
 
-    raw_input('Press key to exit\n') # Use input() in Python 3
+    raw_input("Press key to exit\n") # Use input() in Python 3
     ipcon.disconnect()

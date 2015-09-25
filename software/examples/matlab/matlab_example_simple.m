@@ -4,18 +4,18 @@ function matlab_example_simple()
 
     HOST = 'localhost';
     PORT = 4223;
-    UID = 'hrg'; % Change to your UID
-    
+    UID = 'XYZ'; % Change to your UID
+
     ipcon = IPConnection(); % Create IP connection
     idi4 = BrickletIndustrialDigitalIn4(UID, ipcon); % Create device object
 
     ipcon.connect(HOST, PORT); % Connect to brickd
     % Don't use device before ipcon is connected
 
-    % Read out values as bitmask
-    value = idi4.getValue();
-    fprintf('Value: %s\n', dec2bin(value));
-    
-    input('Press any key to exit...\n', 's');
+    % Get current value as bitmask
+    valueMask = idi4.getValue();
+    fprintf('Value Mask: %s\n', dec2bin(valueMask));
+
+    input('Press key to exit\n', 's');
     ipcon.disconnect();
 end

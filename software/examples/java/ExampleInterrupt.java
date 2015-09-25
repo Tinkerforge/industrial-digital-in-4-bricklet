@@ -6,8 +6,8 @@ public class ExampleInterrupt {
 	private static final int PORT = 4223;
 	private static final String UID = "XYZ"; // Change to your UID
 
-	// Note: To make the example code cleaner we do not handle exceptions. Exceptions you
-	//       might normally want to catch are described in the documentation
+	// Note: To make the example code cleaner we do not handle exceptions. Exceptions
+	//       you might normally want to catch are described in the documentation
 	public static void main(String args[]) throws Exception {
 		IPConnection ipcon = new IPConnection(); // Create IP connection
 		BrickletIndustrialDigitalIn4 idi4 =
@@ -16,11 +16,12 @@ public class ExampleInterrupt {
 		ipcon.connect(HOST, PORT); // Connect to brickd
 		// Don't use device before ipcon is connected
 
-		// Add and implement listener for interrupt (called if pin 0 changes)
+		// Add interrupt listener
 		idi4.addInterruptListener(new BrickletIndustrialDigitalIn4.InterruptListener() {
 			public void interrupt(int interruptMask, int valueMask) {
-				System.out.println("Interrupt by: " + Integer.toBinaryString(interruptMask));
-				System.out.println("Value: " + Integer.toBinaryString(valueMask));
+				System.out.println("Interrupt Mask: " + Integer.toBinaryString(interruptMask));
+				System.out.println("Value Mask: " + Integer.toBinaryString(valueMask));
+				System.out.println("");
 			}
 		});
 

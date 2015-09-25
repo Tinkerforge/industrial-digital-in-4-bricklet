@@ -1,3 +1,4 @@
+Imports System
 Imports Tinkerforge
 
 Module ExampleSimple
@@ -12,13 +13,12 @@ Module ExampleSimple
         ipcon.Connect(HOST, PORT) ' Connect to brickd
         ' Don't use device before ipcon is connected
 
-        ' Read out values as bitmask
-        Dim value As Integer = idi4.GetValue()
+        ' Get current value as bitmask
+        Dim valueMask As Integer = idi4.GetValue()
+        Console.WriteLine("Value Mask: " + Convert.ToString(valueMask, 2))
 
-        System.Console.WriteLine("Value: " + value.ToString())
-
-        System.Console.WriteLine("Press key to exit")
-        System.Console.ReadLine()
+        Console.WriteLine("Press key to exit")
+        Console.ReadLine()
         ipcon.Disconnect()
     End Sub
 End Module

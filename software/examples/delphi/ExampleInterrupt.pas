@@ -13,7 +13,7 @@ type
     idi4: TBrickletIndustrialDigitalIn4;
   public
     procedure InterruptCB(sender: TBrickletIndustrialDigitalIn4;
-                          const interruptMask: Word; const valueMask: Word);
+                          const interruptMask: word; const valueMask: word);
     procedure Execute;
   end;
 
@@ -25,12 +25,13 @@ const
 var
   e: TExample;
 
-{ Callback function for interrupts }
+{ Callback procedure for interrupt callback }
 procedure TExample.InterruptCB(sender: TBrickletIndustrialDigitalIn4;
-                               const interruptMask: Word; const valueMask: Word);
+                               const interruptMask: word; const valueMask: word);
 begin
-  WriteLn(Format('Interrupt by: %d', [interruptMask]));
-  WriteLn(Format('Value: %d', [valueMask]));
+  WriteLn(Format('Interrupt Mask: %d', [interruptMask]));
+  WriteLn(Format('Value Mask: %d', [valueMask]));
+  WriteLn('');
 end;
 
 procedure TExample.Execute;
@@ -45,7 +46,7 @@ begin
   ipcon.Connect(HOST, PORT);
   { Don't use device before ipcon is connected }
 
-  { Register callback for interrupts }
+  { Register interrupt callback to procedure InterruptCB }
   idi4.OnInterrupt := {$ifdef FPC}@{$endif}InterruptCB;
 
   { Enable interrupt on pin 0 }

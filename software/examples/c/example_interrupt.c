@@ -7,12 +7,13 @@
 #define PORT 4223
 #define UID "XYZ" // Change to your UID
 
-// Callback function for interrupts
-void cb_interrupt(uint8_t interrupt_mask, uint8_t value_mask, void *user_data) {
+// Callback function for interrupt callback
+void cb_interrupt(uint16_t interrupt_mask, uint16_t value_mask, void *user_data) {
 	(void)user_data; // avoid unused parameter warning
 
-	printf("Interrupt by: %d\n", interrupt_mask);
-	printf("Value: %d\n", value_mask);
+	printf("Interrupt Mask: %d\n", interrupt_mask);
+	printf("Value Mask: %d\n", value_mask);
+	printf("\n");
 }
 
 int main(void) {
@@ -31,7 +32,7 @@ int main(void) {
 	}
 	// Don't use device before ipcon is connected
 
-	// Register callback for interrupts
+	// Register interrupt callback to function cb_interrupt
 	industrial_digital_in_4_register_callback(&idi4,
 	                                          INDUSTRIAL_DIGITAL_IN_4_CALLBACK_INTERRUPT,
 	                                          (void *)cb_interrupt,
