@@ -239,7 +239,7 @@ void tick(const uint8_t tick_type) {
 		if(BC->interrupt != 0) {
 			if(BC->counter == 0) {
 				uint16_t value = make_value();
-				uint8_t interrupt = 0;
+				uint16_t interrupt = 0;
 				for(uint8_t i = 0; i < NUM_PINS; i++) {
 					if(BC->interrupt & (1 << i)) {
 						if(((value & (1 << i)) != (BC->last_value & (1 << i)))) {

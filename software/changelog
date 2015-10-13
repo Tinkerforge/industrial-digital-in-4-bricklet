@@ -6,3 +6,6 @@
 
 2.0.1:
 - Add edge counters for all pins
+
+2.0.2:
+- Fix interrupt callback for grouped pins 8 to 15
