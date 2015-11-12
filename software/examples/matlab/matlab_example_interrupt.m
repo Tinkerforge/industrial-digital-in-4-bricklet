@@ -7,7 +7,7 @@ function matlab_example_interrupt()
     UID = 'XYZ'; % Change to your UID
 
     ipcon = IPConnection(); % Create IP connection
-    idi4 = BrickletIndustrialDigitalIn4(UID, ipcon); % Create device object
+    idi4 = handle(BrickletIndustrialDigitalIn4(UID, ipcon), 'CallbackProperties'); % Create device object
 
     ipcon.connect(HOST, PORT); % Connect to brickd
     % Don't use device before ipcon is connected
