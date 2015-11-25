@@ -1,11 +1,11 @@
-1.0.0:
+2012-11-06: 1.0.0 (d803639)
 - Initial version
 
-2.0.0:
+2013-01-17: 2.0.0 (f264528)
 - Support for Protocol 2.0
 
-2.0.1:
+2013-08-28: 2.0.1 (da024aa)
 - Add edge counters for all pins
 
-2.0.2:
+2015-10-13: 2.0.2 (47b118b)
 - Fix interrupt callback for grouped pins 8 to 15
