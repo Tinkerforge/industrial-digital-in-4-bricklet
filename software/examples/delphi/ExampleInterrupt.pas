@@ -12,8 +12,8 @@ type
     ipcon: TIPConnection;
     idi4: TBrickletIndustrialDigitalIn4;
   public
-    procedure InterruptCB(sender: TBrickletIndustrialDigitalIn4;
-                          const interruptMask: word; const valueMask: word);
+    procedure InterruptCB(sender: TBrickletIndustrialDigitalIn4; const interruptMask: word;
+                          const valueMask: word);
     procedure Execute;
   end;
 
@@ -26,8 +26,8 @@ var
   e: TExample;
 
 { Callback procedure for interrupt callback }
-procedure TExample.InterruptCB(sender: TBrickletIndustrialDigitalIn4;
-                               const interruptMask: word; const valueMask: word);
+procedure TExample.InterruptCB(sender: TBrickletIndustrialDigitalIn4; const interruptMask: word;
+                               const valueMask: word);
 begin
   WriteLn(Format('Interrupt Mask: %d', [interruptMask]));
   WriteLn(Format('Value Mask: %d', [valueMask]));
