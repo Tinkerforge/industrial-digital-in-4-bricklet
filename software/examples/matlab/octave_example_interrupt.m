@@ -3,7 +3,7 @@ function octave_example_interrupt()
 
     HOST = "localhost";
     PORT = 4223;
-    UID = "XYZ"; % Change to your UID
+    UID = "XYZ"; % Change XYZ to the UID of your Industrial Digital In 4 Bricklet
 
     ipcon = java_new("com.tinkerforge.IPConnection"); % Create IP connection
     idi4 = java_new("com.tinkerforge.BrickletIndustrialDigitalIn4", UID, ipcon); % Create device object

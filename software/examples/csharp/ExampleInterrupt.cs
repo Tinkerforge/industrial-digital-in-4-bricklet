@@ -5,10 +5,11 @@ class Example
 {
 	private static string HOST = "localhost";
 	private static int PORT = 4223;
-	private static string UID = "XYZ"; // Change to your UID
+	private static string UID = "XYZ"; // Change XYZ to the UID of your Industrial Digital In 4 Bricklet
 
 	// Callback function for interrupt callback
-	static void InterruptCB(BrickletIndustrialDigitalIn4 sender, int interruptMask, int valueMask)
+	static void InterruptCB(BrickletIndustrialDigitalIn4 sender, int interruptMask,
+	                        int valueMask)
 	{
 		Console.WriteLine("Interrupt Mask: " + Convert.ToString(interruptMask, 2));
 		Console.WriteLine("Value Mask: " + Convert.ToString(valueMask, 2));

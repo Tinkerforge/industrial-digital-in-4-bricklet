@@ -5,7 +5,7 @@ use Tinkerforge::BrickletIndustrialDigitalIn4;
 
 use constant HOST => 'localhost';
 use constant PORT => 4223;
-use constant UID => 'XYZ'; # Change to your UID
+use constant UID => 'XYZ'; # Change XYZ to the UID of your Industrial Digital In 4 Bricklet
 
 # Callback subroutine for interrupt callback
 sub cb_interrupt
