@@ -26,7 +26,7 @@ class Example
 		// Don't use device before ipcon is connected
 
 		// Register interrupt callback to function InterruptCB
-		idi4.Interrupt += InterruptCB;
+		idi4.InterruptCallback += InterruptCB;
 
 		// Enable interrupt on pin 0
 		idi4.SetInterrupt(1 << 0);
