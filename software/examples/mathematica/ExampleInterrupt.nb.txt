@@ -17,7 +17,7 @@ InterruptCB[sender_,interruptMask_,valueMask_]:=
   Print["Value Mask: "<>StringJoin[Map[ToString,IntegerDigits[valueMask,2,4]]]]
  ]
 
-AddEventHandler[idi4@Interrupt,InterruptCB]
+AddEventHandler[idi4@InterruptCallback,InterruptCB]
 
 (*Enable interrupt on pin 0*)
 idi4@SetInterrupt[FromDigits[{0,0,0,1},2]]

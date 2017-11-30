@@ -17,7 +17,7 @@ ipcon.connect HOST, PORT # Connect to brickd
 # Don't use device before ipcon is connected
 
 # Register interrupt callback
-idi4.register_callback(BrickletIndustrialDigitalIn4::CALLBACK_INTERRUPT) do |interrupt_mask, \
+idi4.register_callback(BrickletIndustrialDigitalIn4::CALLBACK_INTERRUPT) do |interrupt_mask,
                                                                              value_mask|
   puts "Interrupt Mask: #{'%04b' % interrupt_mask}"
   puts "Value Mask: #{'%04b' % value_mask}"
