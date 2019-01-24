@@ -2,5 +2,5 @@
 
 setup:
 	# Get current value as bitmask
-	subscribe to tinkerforge/response/industrial_digital_in_4/XYZ/get_value
+	subscribe to tinkerforge/response/industrial_digital_in_4_bricklet/XYZ/get_value
 	publish '' to tinkerforge/request/industrial_digital_in_4_bricklet/XYZ/get_value 
