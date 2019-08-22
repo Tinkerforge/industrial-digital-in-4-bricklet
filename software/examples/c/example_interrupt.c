@@ -35,7 +35,7 @@ int main(void) {
 	// Register interrupt callback to function cb_interrupt
 	industrial_digital_in_4_register_callback(&idi4,
 	                                          INDUSTRIAL_DIGITAL_IN_4_CALLBACK_INTERRUPT,
-	                                          (void *)cb_interrupt,
+	                                          (void (*)(void))cb_interrupt,
 	                                          NULL);
 
 	// Enable interrupt on pin 0
